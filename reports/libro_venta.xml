@@ -9,17 +9,18 @@
         name="l10n_cl_libros_contables.libro_ventas_view"
         paperformat="paperformat_opendrive_reportes_chile"
 />
-<template id="l10n_cl_libros_contables.libro_ventas_view">
-<t t-name="libro_ventas_view">
-<!--<t t-call="web.external_layout">-->
-<t t-call="web.basic_layout">
-<t t-foreach="docs" t-as="o">
-
+        <template id="l10n_cl_libros_contables.libro_ventas_view">
+        <t t-name="libro_ventas_view">
+        <!--<t t-call="web.external_layout">-->
+        <t t-call="web.basic_layout">
+        <t t-foreach="docs" t-as="o">
+        <t t-set="logo" t-value="o.company_id.logo"/>
 
         <div class="header">
         	<table class="table-condensed table-bordered" style="width:100%;font-size:10px">
         		<tr>
-                    <td><img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % o.company_id.logo" style="max-height: 45px;"/></td>
+                    <!--<td><img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % o.company_id.logo" style="max-height: 45px;"/></td>-->
+                    <td><img t-if="logo" t-att-src="'data:image/png;base64,%s' % to_text(logo)" style="max-height: 45px;"/></td>
         			<td>
                         <b>Informe: </b><span>Libro de Ventas</span>
                     </td>

@@ -207,7 +207,7 @@ class libro_venta_reportes_chile(models.TransientModel):
             dict.update(dic)
             dict['Tipo']=i.document_class_id.name
             dict['Numero']=i.sii_document_number
-            dict['Fecha']=i.date_order
+            dict['Fecha']=i.date_order.date()
             dict['Rut']=i.partner_id.document_number
             dict['Cliente']=i.partner_id.name
             dict['Exento']=exento
