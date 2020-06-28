@@ -13,8 +13,8 @@
 <template id="l10n_cl_libros_contables.libro_diario_view">
 <t t-name="l10n_cl_libros_contables.libro_diario_view">
         <t t-call="web.basic_layout">
-        <t t-set="logo" t-value="o.company_id.logo"/>
         <t t-foreach="docs" t-as="o">
+        <t t-set="logo" t-value="o.company_id.logo"/>
         <div class="header">
             <br></br>
             <br></br>
