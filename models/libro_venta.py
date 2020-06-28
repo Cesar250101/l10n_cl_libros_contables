@@ -8,6 +8,7 @@ import base64
 import pandas as pd
 import numpy as np
 import logging
+import dateutil.parser
 
 
 _logger = logging.getLogger(__name__)
@@ -207,7 +208,8 @@ class libro_venta_reportes_chile(models.TransientModel):
             dict.update(dic)
             dict['Tipo']=i.document_class_id.name
             dict['Numero']=i.sii_document_number
-            dict['Fecha']=i.date_order.date()
+            #dict['Fecha']=i.date_order
+            dict['Fecha']=dateutil.parser.parse(i.date_order).date()
             dict['Rut']=i.partner_id.document_number
             dict['Cliente']=i.partner_id.name
             dict['Exento']=exento
