@@ -246,7 +246,7 @@ class libro_venta_reportes_chile(models.TransientModel):
     def _resumen_libro_venta(self):
         tabla1 = self._facturas_libro_venta()
         tabla2 = self._nc_libro_venta()
-        tabla3 = self._boletas_libro_venta()
+        tabla3 = self._boletas_pos_libro_venta()
         union = pd.concat([tabla1,tabla2,tabla3])
         if not union.empty:
             union = union.drop(['Fecha','Rut','Cliente'], axis=1)
