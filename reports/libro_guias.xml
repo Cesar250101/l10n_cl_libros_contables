@@ -5,7 +5,7 @@
         id="libro_guia"
         string="Libro de Guias de despacho"
         model="wizard.reportes.chile"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="l10n_cl_libros_contables.libro_guias"
         paperformat="paperformat_opendrive_reportes_chile"
 />
@@ -17,27 +17,27 @@
     <div class="header">
             <table class="table-condensed table-bordered" style="width:100%;font-size:10px">
                 <tr>
-                    <td><img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % o.company_id.logo" style="max-height: 45px;"/></td> 
+                    <td><img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % o.company_id.logo" style="max-height: 45px;"/></td>
                     <td>
-                        <b>Informe: </b><span>Libro de Guias de despacho</span>                        
+                        <b>Informe: </b><span>Libro de Guias de despacho</span>
                     </td>
                     <td>
                         <b>Periodo: </b>
                         <span t-field="o.fecha_inicio"/>
                         <span> hasta </span>
-                        <span t-field="o.fecha_term"/>                
+                        <span t-field="o.fecha_term"/>
                     </td>
-                    <td>                  
+                    <td>
                         <span>Pagina </span>
                         <span class="page"/>
                         <span>de </span>
-                        <span class="topage"/>                        
+                        <span class="topage"/>
                     </td>
-                </tr>               
+                </tr>
             </table>
-        </div> 
+        </div>
 
-        <div class="page"> 
+        <div class="page">
             <style>
                 th,td{ white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
                 thead { display: table-header-group }
@@ -45,13 +45,13 @@
                 tr { page-break-inside: avoid }
             </style>
             <t t-set="tabla" t-value="o._libro_guias()"/>
-            <t t-if="not tabla.empty">                                                                   
+            <t t-if="not tabla.empty">
                     <table class="table-condensed table-bordered" style="width:100%;font-size:10px;table-layout: fixed">
-                        <tr> 
+                        <tr>
                             <t t-foreach="tabla.columns.values.tolist()" t-as="p">
                                 <th><span t-esc="p"/></th>
                             </t>
-                        </tr>                        
+                        </tr>
                         <t t-foreach="tabla.values.tolist()" t-as="p">
                             <tr>
                                 <t t-foreach="p[:-3]" t-as="q">
@@ -63,21 +63,21 @@
                                     <td style="text-align: right">
                                         <span t-esc="q" t-esc-options='{"widget": "monetary","display_currency":"o.company_id.currency_id"}'/>
                                     </td>
-                                </t>                                                     
-                            </tr> 
+                                </t>
+                            </tr>
                         </t>
                         <tr>
-                            <th colspan="7">                                    
+                            <th colspan="7">
                                 Total
                             </th>
                             <t t-foreach="tabla[tabla.columns[-3:]].sum().values.tolist()" t-as="p">
                                 <th style="text-align: right">
                                     <span t-esc="p" t-esc-options='{"widget": "monetary","display_currency":"o.company_id.currency_id"}'/>
-                                </th>  
-                            </t>                            
-                        </tr>                                                    
-                    </table>                         
-                </t> 
+                                </th>
+                            </t>
+                        </tr>
+                    </table>
+                </t>
         </div>
 
 

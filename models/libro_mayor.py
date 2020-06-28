@@ -13,8 +13,8 @@ _logger = logging.getLogger(__name__)
 
 
 class libro_mayor_reportes_chile(models.TransientModel):
-    _inherit = 'wizard.reportes.chile' 
-    
+    _inherit = 'wizard.reportes.chile'
+
     @api.multi
     def dic_libro_mayor(self):
         dic = OrderedDict([
@@ -26,14 +26,14 @@ class libro_mayor_reportes_chile(models.TransientModel):
                 ('Glosa',''),
                 ('Documento',''),
                 ('Debe',0.0),
-                ('Haber',0.0),        
-                ('Saldo',0.0)         
+                ('Haber',0.0),
+                ('Saldo',0.0)
                 ])
         return dic
 
     @api.multi
     def _libro_mayor_sql(self,wizard=False):
-        if wizard:  
+        if wizard:
             wiz = self.search([('id','=',wizard)])
         else:
             wiz = self
@@ -50,28 +50,28 @@ class libro_mayor_reportes_chile(models.TransientModel):
         if wiz.acount_ids:
             cuentas = 'and aa.id in ('+",".join(map(str,set(wiz.acount_ids.ids)))+')'
         wiz.env.cr.execute("""
-            SELECT  
+            SELECT
             null as Fecha,
             'Saldo Inicial' as comprobante,
             null,
-            null,          
-            concat_ws(' - ', aa.code::text, aa.name::text) as cuenta,   
             null,
-            null,        
+            concat_ws(' - ', aa.code::text, aa.name::text) as cuenta,
+            null,
+            null,
             sum(aml.debit),
             sum(aml.credit)
 
-            FROM 
+            FROM
             account_move_line aml,
             account_account aa,
-            account_move am          
+            account_move am
 
-            WHERE   
+            WHERE
             aml.account_id=aa.id and
-            aml.move_id=am.id and 
-            am.state='posted' and 
-            aml.company_id = %s and             
-            aml.date <= '%s'            
+            aml.move_id=am.id and
+            am.state='posted' and
+            aml.company_id = %s and
+            aml.date <= '%s'
             %s
 
             GROUP BY
@@ -103,18 +103,18 @@ class libro_mayor_reportes_chile(models.TransientModel):
             aml.credit as credit,
             aml.partner_id as partner_id
 
-            FROM 
+            FROM
             account_move_line aml,
             account_account aa,
             account_move am
 
-            WHERE   
+            WHERE
             aml.account_id=aa.id and
-            aml.move_id=am.id and 
+            aml.move_id=am.id and
             am.state='posted' and
             aml.company_id = %s and
             aml.date >= '%s' and
-            aml.date <= '%s'            
+            aml.date <= '%s'
             %s
             )q1
 
@@ -136,11 +136,11 @@ class libro_mayor_reportes_chile(models.TransientModel):
             q2.id=q1.partner_id
 
             ORDER BY
-            cuenta, fecha NULLS FIRST, comprobante                       
+            cuenta, fecha NULLS FIRST, comprobante
             """ %(company,fecha_inicio,cuentas,company,fecha_inicio,fecha_term,cuentas))
         dic = wiz.dic_libro_mayor()
         lista = []
-        docs = wiz.env.cr.fetchall()        
+        docs = wiz.env.cr.fetchall()
         # cuentas = set([(record[9],record[4]) for record in docs])
         # for record in cuentas:
         #     lista += wiz._libro_mayor_saldo_inicial_sql(record[0],record[1])
@@ -156,10 +156,10 @@ class libro_mayor_reportes_chile(models.TransientModel):
             dicti['Documento']=record[6]
             dicti['Debe']=float(record[7])
             dicti['Haber']=float(record[8])
-            lista.append(dicti)            
-        tabla = pd.DataFrame(lista) 
+            lista.append(dicti)
+        tabla = pd.DataFrame(lista)
         if not tabla.empty:
-            tabla['Saldo'] = (tabla['Debe']-tabla['Haber'])   
-            tabla['Saldo'] = tabla.groupby('Cuenta')['Saldo'].transform(pd.Series.cumsum) 
-        return tab
+            tabla['Saldo'] = (tabla['Debe']-tabla['Haber'])
+            tabla['Saldo'] = tabla.groupby('Cuenta')['Saldo'].transform(pd.Series.cumsum)
+        return tabla
 

@@ -11,16 +11,16 @@ import logging
 
 
 class libro_compra_reportes_chile(models.TransientModel):
-    _inherit = 'wizard.reportes.chile' 
+    _inherit = 'wizard.reportes.chile'
 
     @api.multi
-    def _facturas_libro_compra(self): 
-        search_domain = self._get_domain()
+    def _facturas_libro_compra(self):
+        search_domain = self._get_domain_libro_compra()
         search_domain += [
-            ('state','in',['open','paid']),            
+            ('state','in',['open','paid']),
             ('type','in',['in_invoice']),
             ('sii_code','in',['30','32','33','34','45','46','55','56'])
-            ]  
+            ]
         docs = self.env['account.invoice'].search(search_domain, order='reference asc')
         impuestos_obj = self.env['account.tax'].search([
             ('mostrar_c','=',True),
@@ -32,12 +32,12 @@ class libro_compra_reportes_chile(models.TransientModel):
             ('Rut',''),
             ('Cliente',''),
             ('Exento',0),
-            ('Neto',0),            
+            ('Neto',0),
             ])
         for record in impuestos_obj:
             dic.update({record.name:0})
-        dic.update({'Total Impuestos':0}) 
-        dic.update({'Total':0})    
+        dic.update({'Total Impuestos':0})
+        dic.update({'Total':0})
         lista = []
         monto_exento=0
         for i in docs:
@@ -58,18 +58,18 @@ class libro_compra_reportes_chile(models.TransientModel):
             dict['Total']=i.amount_total
             for imp in i.tax_line_ids.filtered(lambda r: r.name in dic.keys()):
                 dict[imp.name]+=imp.amount
-            lista.append(dict)                              
-        tabla = pd.DataFrame(lista)            
-        return tabla 
+            lista.append(dict)
+        tabla = pd.DataFrame(lista)
+        return tabla
 
     @api.multi
-    def _nc_libro_compra(self): 
+    def _nc_libro_compra(self):
         search_domain = self._get_domain()
         search_domain += [
-            ('state','in',['open','paid']),            
+            ('state','in',['open','paid']),
             ('type','in',['in_refund']),
             ('sii_code','in',['60','61'])
-            ] 
+            ]
         docs = self.env['account.invoice'].search(search_domain, order='reference asc')
         impuestos_obj = self.env['account.tax'].search([
             ('mostrar_c','=',True),
@@ -81,12 +81,12 @@ class libro_compra_reportes_chile(models.TransientModel):
             ('Rut',''),
             ('Cliente',''),
             ('Exento',0),
-            ('Neto',0),            
+            ('Neto',0),
             ])
         for record in impuestos_obj:
             dic.update({record.name:0})
         dic.update({'Total Impuestos':0})
-        dic.update({'Total':0})    
+        dic.update({'Total':0})
         lista = []
         monto_exento = 0
         for i in docs:
@@ -107,9 +107,9 @@ class libro_compra_reportes_chile(models.TransientModel):
             dict['Total']=-i.amount_total
             for imp in i.tax_line_ids.filtered(lambda r: r.name in dic.keys()):
                 dict[imp.name]+=-imp.amount
-            lista.append(dict)                              
-        tabla = pd.DataFrame(lista)            
-        return tabla 
+            lista.append(dict)
+        tabla = pd.DataFrame(lista)
+        return tabla
 
     # @api.multi
     # def _din_libro_compra(self):
@@ -150,10 +150,10 @@ class libro_compra_reportes_chile(models.TransientModel):
     #         lista.append(dict)
     #     tabla = pd.DataFrame(lista)
     #     return tabla
-   
+
 
     @api.multi
-    def _resumen_libro_compra(self): 
+    def _resumen_libro_compra(self):
         tabla1 = self._facturas_libro_compra()
         tabla2 = self._nc_libro_compra()
         # tabla3 = self._din_libro_compra()
@@ -164,7 +164,7 @@ class libro_compra_reportes_chile(models.TransientModel):
 	        columnas = list(union)
 	        aggregations = OrderedDict()
 	        for record in columnas:
-	            aggregations.update([(record,'sum')])        
+	            aggregations.update([(record,'sum')])
 	        aggregations['Numero']='count'
 	        aggregations['Tipo']='max'
 	        #aggregations.pop('Tipo', None)
@@ -173,8 +173,8 @@ class libro_compra_reportes_chile(models.TransientModel):
 
 
     @api.multi
-    def _tabla_libro_compra(self,wizard=False):  
-        if wizard:  
+    def _tabla_libro_compra(self,wizard=False):
+        if wizard:
             wiz = self.search([('id','=',wizard)])
         else:
             wiz = self
