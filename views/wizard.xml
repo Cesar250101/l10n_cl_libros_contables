@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    <record id="account.invoice_form_method" model="ir.ui.view">
+        <field name="name">account.invoice.form.method</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_supplier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_invoice']" position="after">
+                <field name="periodo_libro" required="True"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!--<record id="account.invoice_form_method" model="ir.ui.view">
+        <field name="name">account.invoice_form.method</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_invoice']" position="after">
+                <field name="periodo_libro" required="True"/>
+            </xpath>
+
+        </field>
+    </record>-->
+
+
+    <record id="periodo_libro_method" model="ir.ui.view">
+        <field name="name">wizard.periodo.libro.method</field>
+        <field name="model">wizard.periodo.libro</field>
+        <field name="arch" type="xml">
+            <form string="Periodos para facturas de compra y venta">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="action_periodos">
+        <field name="name">Periodos</field>
+        <field name="res_model">wizard.periodo.libro</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_periodos" parent="account.account_account_menu" name="Periodos" sequence="10"
+              action="action_periodos"/>
+
+
+      <record id="wizard_reportes_chile_view" model="ir.ui.view">
+            <field name="name">wizard.reportes.chile.view</field>
+            <field name="model">wizard.reportes.chile</field>
+            <field name="arch" type="xml">
+                <form string="Reportes Financieros Chile">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="informe"/>
+                                <field name="arbol_id" invisible="1"/>
+                                <field name="company_id" string="Compañia"/>
+                                <field name="section_id" string="Equipo de Ventas"
+                                    attrs="{'invisible': [('informe', 'not in', [2])]}"/>
+                            </group>
+                            <group>
+                                <field name="fecha_inicio"/>
+                                <field name="fecha_term"/>
+                                <field name="periodo_libro" attrs="{'invisible':[('informe', '!=', 3)]}"/>
+                                <field name="cabezera"/>
+                                <field name="pendiente" invisible="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Empresas" attrs="{'invisible': [('informe', 'not in', [1,2,3,4,5])]}">
+                                <field name="partner_ids"/>
+                            </page>
+                            <page string="Cuentas" attrs="{'invisible': [('informe', 'not in', [1,7,8])]}">
+                                <field name="acount_ids"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <footer>
+                        <button name="imprimir_pdf" type="object" string="Visualizar"/>
+                        <button name="imprimir_excel" type="object" string="Excel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="wizard_reportes_chile_excel_view" model="ir.ui.view">
+            <field name="name">wizard.reportes.chile.excel.view</field>
+            <field name="model">wizard.reportes.chile.excel</field>
+            <field name="arch" type="xml">
+                <form string="Descargar excel">
+                    <sheet>
+                        <group>
+                            <field name="filename" invisible="1"/>
+                            <field string="Link de descarga" name="file" widget="binary" filename="filename" readonly="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="libros_tax_inherit" model="ir.ui.view">
+            <field name="name">libros.tax.inherit</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="arch" type="xml">
+                <field name="active" position="after">
+                    <field name="mostrar_v"/>
+                    <field name="mostrar_c"/>
+                </field>
+            </field>
+        </record>
+
+        <!--<record id="account_type_form_inh" model="ir.ui.view">-->
+            <!--<field name="name">account_type_form_inh</field>-->
+            <!--<field name="model">account.account.type</field>-->
+            <!--<field name="inherit_id" ref="account.view_account_type_form"/>            -->
+            <!--<field name="arch" type="xml">-->
+                <!--<field name="include_initial_balance" position="after">-->
+                    <!--<field name="report_type"/>                    -->
+                <!--</field>-->
+            <!--</field>-->
+        <!--</record>-->
+
+
+    <act_window id="action_reportes_chile" name="Reportes Chile" res_model="wizard.reportes.chile" view_mode="form" target="new"/>
+    <menuitem action="action_reportes_chile" id="reporte_partner_cta_cte" parent="account.menu_finance_reports" groups="account.group_account_manager" sequence="5"/>
+
+    </data>
+</openerp>

@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<odoo>
+<data>
+<report
+        id="l10n_cl_libros_contables.libro_diarios"
+        string="Libro Diario"
+        model="wizard.reportes.chile"
+        report_type="qweb-pdf"
+        name="l10n_cl_libros_contables.libro_diario_view"
+        paperformat="paperformat_opendrive_reportes_chile"
+/>
+
+<template id="l10n_cl_libros_contables.libro_diario_view">
+<t t-name="l10n_cl_libros_contables.libro_diario_view">
+    <t t-call="web.basic_layout">
+        <t t-foreach="docs" t-as="o">
+
+    
+        <div class="header">
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+
+        	<table class="table-condensed table-bordered" style="width:100%;font-size:10px">
+        		<tr>
+                    <td><img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)" style="max-height: 45px;"/></td>
+        			<td>
+                        <strong><b>Informe: </b><span>Libro Diario</span></strong>
+                    </td>
+        			<td>
+                        <strong>
+                            <b>Periodo: </b>
+                            <span t-field="o.fecha_inicio"/>
+                            <span> hasta </span>
+                            <span t-field="o.fecha_term"/>
+                        </strong>
+                    </td>
+                    <td>
+                        <strong>
+                            <span>Pagina </span>
+                            <span class="page"/>
+                            <span>de </span>
+                            <span class="topage"/>
+                        </strong>
+                    </td>
+        		</tr>        		
+        	</table>
+        </div> 
+        <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+
+        <div class="page"> 
+            <style>
+                th,td{ white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+                thead { display: table-header-group }
+                tfoot { display: table-row-group }
+                tr { page-break-inside: avoid }
+            </style>
+            <t t-set="tabla" t-value="o._libro_diario()"/>
+            <t t-if="not tabla.empty">  
+                <t t-foreach="tabla['Comprobante'].unique().tolist()" t-as="asiento"> 
+                    <span t-esc="asiento"/>          
+                    <table class="table-condensed table-bordered" style="width:100%;font-size:10px;table-layout: fixed">
+                        <tr> 
+                            <t t-foreach="tabla.columns.values.tolist()" t-as="p">
+                                <th><span t-esc="p"/></th>
+                            </t>
+                        </tr>  
+                        <t t-foreach="tabla.loc[tabla['Comprobante'] == asiento].values.tolist()" t-as="p">
+                            <tr>
+                                <t t-foreach="p[:-2]" t-as="q">
+                                    <td>
+                                        <span t-esc="q"/>
+                                    </td>
+                                </t>
+                                <t t-foreach="p[-2:]" t-as="q">
+                                    <td style="text-align: right">
+                                        <span t-esc="q" t-esc-options='{"widget": "monetary","display_currency":"o.company_id.currency_id"}'/>
+                                    </td>
+                                </t>                                                     
+                            </tr> 
+                        </t>
+                        <tr>
+                            <th colspan="7">                                    
+                                Total
+                            </th>
+                            <t t-foreach="tabla.loc[tabla['Comprobante'] == asiento].sum().values.tolist()[-2:]" t-as="p">
+                                <th style="text-align: right">
+                                    <span t-esc="p" t-esc-options='{"widget": "monetary","display_currency":"o.company_id.currency_id"}'/>
+                                </th>  
+                            </t>                            
+                        </tr> 
+                    </table>                         
+            </t> 
+        </t>
+    </div>
+
+
+</t>
+</t>
+</t>
+</template>
+
+
+
+</data>
+</odoo>
