@@ -56,6 +56,20 @@ class wizard_reportes_chile(models.TransientModel):
         return search_domain
 
     @api.multi
+    def _get_domain_boletas(self):
+        search_domain=[]
+        search_domain += [('company_id','=',self.company_id.id)]
+        search_domain += [('date_order', '>=', self.fecha_inicio)]
+        search_domain += [('date_order', '<=', self.fecha_term)]
+        #search_domain += [('periodo_libro', '=', self.periodo_libro.name)]
+        if self.partner_ids:
+            search_domain+=[('partner_id', 'in', self.partner_ids.ids)]
+        if self.section_id:
+            search_domain += [('section_id','=', self.section_id.id)]
+        return search_domain
+
+
+    @api.multi
     def imprimir_pdf(self):
         data = {
             'ids': self.ids,

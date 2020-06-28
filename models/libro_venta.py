@@ -175,7 +175,7 @@ class libro_venta_reportes_chile(models.TransientModel):
         return tabla
 
     def _boletas_pos_libro_venta(self):
-        search_domain = self._get_domain()
+        search_domain = self._get_domain_boletas()
         search_domain += [
             ('sii_code','in',['35','38','39'])
              ]
