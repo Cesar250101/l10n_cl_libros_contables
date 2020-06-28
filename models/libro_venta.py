@@ -174,9 +174,54 @@ class libro_venta_reportes_chile(models.TransientModel):
         tabla = pd.DataFrame(lista)
         return tabla
 
+    def _boletas_pos_libro_venta(self):
+        search_domain = self._get_domain()
+        search_domain += [
+            ('sii_code','in',['35','38','39'])
+             ]
+        docs = self.env['pos.order'].search(search_domain, order='sii_document_number asc')
+#        impuestos_obj = self.env['account.tax'].search([
+#            ('mostrar_v','=',True),
+#            ('company_id','=',self.company_id.id)])
+        dic = OrderedDict([
+            ('Tipo',''),
+            ('Numero',''),
+            ('Fecha',''),
+            ('Rut',''),
+            ('Cliente',''),
+            ('Exento',0),
+            ('Neto',0),
+            ])
+        # for record in impuestos_obj:
+        #     dic.update({record.name:0})
+        # dic.update({'Total Impuestos':0})
+        # dic.update({'Total':0})
+        lista = []
+        exento=0
+        neto=0
+        for i in docs:
+            exento=0
+            neto=i.amount_untaxed
+
+            dict = OrderedDict()
+            dict.update(dic)
+            dict['Tipo']=i.document_class_id.name
+            dict['Numero']=i.sii_document_number
+            dict['Fecha']=i.date_order
+            dict['Rut']=i.partner_id.document_number
+            dict['Cliente']=i.partner_id.name
+            dict['Exento']=exento
+            dict['Neto']=neto
+            dict['Total Impuestos']=i.amount_tax
+            dict['Total']=i.amount_total
+            lista.append(dict)
+        tabla = pd.DataFrame(lista)
+        return tabla
+
+
     @api.multi
     def _resumen_boletas_libro_venta(self):
-        tabla = self._boletas_libro_venta()
+        tabla = self._boletas_pos_libro_venta()
         if not tabla.empty:
             tabla = tabla.rename(
                 columns={
