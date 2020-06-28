@@ -269,7 +269,7 @@ class libro_venta_reportes_chile(models.TransientModel):
             wiz = self
         tabla1 = wiz._facturas_libro_venta()
         tabla2 = wiz._nc_libro_venta()
-        tabla3 = wiz._boletas_libro_venta()
+        tabla3 = wiz._boletas_pos_libro_venta()
         union = pd.concat([tabla1,tabla2,tabla3])
         #if union.empty:
            # return 'error'
