@@ -201,7 +201,7 @@ class libro_venta_reportes_chile(models.TransientModel):
         neto=0
         for i in docs:
             exento=0
-            neto=i.amount_untaxed
+            neto=i.amount_total-i.amount_tax
 
             dict = OrderedDict()
             dict.update(dic)
