@@ -74,7 +74,7 @@ class cta_cte_reportes_chile(models.TransientModel):
             dicti['Fecha']=i.date
             dicti['Periodo']=i.date
             #dicti['Referencia']=(i.invoice_id.supplier_invoice_number or i.invoice_id.number or i.ref)
-            dicti['Referencia'] = i.invoice_id.number
+            dicti['Referencia'] = i.invoice_id.sii_document_number
             #dicti['Diario']=i.journal_id.name
             dicti['Cuenta']=i.account_id.name
             dicti['Fecha Venc.']=i.date_maturity
