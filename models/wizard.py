@@ -58,7 +58,7 @@ class wizard_reportes_chile(models.TransientModel):
     def _get_domain_libro_compra(self):
         search_domain=[]
         search_domain += [('company_id','=',self.company_id.id)]
-        search_domain += [('periodo_libro', '>=', self.periodo_libro.id)]
+        search_domain += [('periodo_libro', '=', self.periodo_libro.id)]
         #search_domain += [('periodo_libro', '=', self.periodo_libro.name)]
         if self.partner_ids:
             search_domain+=[('partner_id', 'in', self.partner_ids.ids)]
