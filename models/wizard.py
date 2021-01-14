@@ -205,6 +205,13 @@ class PeriodoLibro(models.Model):
     name = fields.Char(string="Periodo Libro")
     active = fields.Boolean(string="Activo?", default=True )
 
+
+    _sql_constraints = [
+        ('name_unique',
+         'UNIQUE(name)',
+         "El nombre del periodo debe ser unico!"),
+    ]
+
 class Facturas(models.Model):
     _inherit = 'account.invoice'
 
